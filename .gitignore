@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# Packaging artifacts (Web Store zip, self-packed crx and its private key)
+*.zip
+*.crx
+*.pem
+
+# Node, if a test toolchain is ever added
+node_modules/
