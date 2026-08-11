@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "tabrc",
+  "description": "New tab page showing your tabrc-hotlist bookmarks folder.",
+  "version": "0.1.0",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "permissions": ["bookmarks", "favicon"]
+}

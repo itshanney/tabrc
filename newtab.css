@@ -1,0 +1,124 @@
+:root {
+  color-scheme: light dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: Canvas;
+  color: CanvasText;
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  /* Long titles are ellipsized, never widen the page: no horizontal scroll. */
+  overflow-x: hidden;
+}
+
+main {
+  padding: 24px 32px;
+}
+
+/* ---- Entries (shared by both modes) ---- */
+
+.group-entries {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  break-inside: avoid;
+}
+
+.entry-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.entry-link:hover,
+.entry-link:focus-visible {
+  background: color-mix(in srgb, CanvasText 10%, transparent);
+}
+
+.entry-favicon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.entry-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---- Flat mode: one list flowed down-then-across, filling the width ---- */
+
+main[data-mode="flat"] .group-entries {
+  columns: 16rem auto;
+  column-gap: 24px;
+}
+
+/* ---- Grouped mode: one labeled column per sub-folder ---- */
+
+main[data-mode="grouped"] {
+  display: flex;
+  flex-wrap: wrap; /* wrap rather than horizontally scroll at narrow widths */
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.group {
+  flex: 1 1 0;
+  min-width: 14rem;
+}
+
+.group-heading {
+  margin: 0 0 6px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, CanvasText 60%, Canvas);
+}
+
+/* ---- Empty state ---- */
+
+main[data-mode="empty"] {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+
+.empty-state {
+  max-width: 34rem;
+  text-align: center;
+}
+
+.empty-state h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  margin: 0;
+  color: color-mix(in srgb, CanvasText 70%, Canvas);
+}
+
+.empty-state code {
+  font-family: ui-monospace, monospace;
+  background: color-mix(in srgb, CanvasText 10%, transparent);
+  padding: 1px 5px;
+  border-radius: 4px;
+}

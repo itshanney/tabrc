@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>New Tab</title>
+  <link rel="stylesheet" href="newtab.css">
+  <script type="module" src="newtab.js"></script>
+</head>
+<body>
+  <main id="hotlist"></main>
+
+  <template id="entry-template">
+    <li class="entry">
+      <a class="entry-link">
+        <img class="entry-favicon" alt="" width="16" height="16">
+        <span class="entry-title"></span>
+      </a>
+    </li>
+  </template>
+
+  <template id="group-template">
+    <section class="group">
+      <h2 class="group-heading"></h2>
+      <ul class="group-entries"></ul>
+    </section>
+  </template>
+
+  <template id="empty-template">
+    <div class="empty-state">
+      <h1>Your hot list is empty</h1>
+      <p>
+        Create a bookmarks folder named <code>tabrc-hotlist</code> in Chrome's
+        Bookmark Manager and the bookmarks you put in it will appear here.
+        Sub-folders inside it become labeled columns.
+      </p>
+    </div>
+  </template>
+</body>
+</html>
