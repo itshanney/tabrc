@@ -42,14 +42,23 @@ Tune these rather than editing the rules that consume them:
 | `--column-gap` | `50px` | Horizontal space between columns (both modes) |
 | `--row-gap` | `24px` | Vertical space when grouped columns wrap to a second row |
 | `--content-anchor` | `40vh` | Where the vertical midpoint of the content block sits |
+| `--max-columns` | `3` | Grouped columns per row before wrapping (grouped mode only) |
+| `--page-padding-x` | `32px` | `main`'s horizontal padding; folded into the grouped-mode `max-width` |
 
-Two mechanics worth knowing before touching this:
+Three mechanics worth knowing before touching this:
 
 - **Vertical anchoring.** `main` is `min-height: 100vh` with `box-sizing:
   border-box`, and each mode centers its content inside main's *content* box.
   The extra bottom padding (`calc(24px + 100vh - 2 * var(--content-anchor))`)
   shrinks that box from the bottom, moving the midpoint from 50vh to the
   anchor. Values above `50vh` invert the math — keep it ≤ 50vh.
+- **The 3-column cap is a container width, not a grid template.** Grouped mode
+  stays a wrapping flex row; `main` is capped at `--max-columns` columns wide
+  (plus gaps, plus `2 * --page-padding-x` because of `border-box`), which is
+  what forces the wrap independent of viewport width. `justify-content: center`
+  then centers a partial row — the leftover column lands in the middle and
+  further ones spread to the sides. A real `grid-template-columns` would
+  left-align that last row instead.
 - **Fixed width is grouped-mode only.** Flat mode is CSS multicol, where
   `column-width` is a *minimum*: columns stretch to fill the viewport. Pinning
   flat columns to an exact width would require constraining the container to a
