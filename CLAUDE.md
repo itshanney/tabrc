@@ -7,7 +7,9 @@ sourced from a Chrome bookmarks folder named `tabrc-hotlist`.
 
 - **No build step, no dependencies, no framework.** The repo root IS the
   unpacked extension. Plain HTML/CSS/JS (ES modules). Keep it that way unless a
-  spec says otherwise.
+  spec says otherwise. The Gradle script is *packaging only* — it zips the
+  existing files for the Web Store and never transforms them. Nothing in the
+  extension may come to depend on having run it.
 - **Zero network egress** is a hard product guarantee (PRD criterion #7).
   Favicons come only from Chrome's `_favicon/` endpoint. Never add remote
   fetches, CDNs, or analytics.
@@ -31,6 +33,8 @@ sourced from a Chrome bookmarks folder named `tabrc-hotlist`.
 | `newtab.css` | Flat mode = full-width multicol; grouped mode = wrapping flex columns. All layout knobs are `:root` custom properties — see below |
 | `features/` | PRDs (product specs) |
 | `specs/` | Tech specs |
+| `build.gradle` | Web Store packaging only (`gradle package`) — see below |
+| `settings.gradle` | Roots the Gradle project here so it doesn't search parent dirs |
 
 ### Layout knobs (`:root` in `newtab.css`)
 
@@ -82,6 +86,17 @@ Three mechanics worth knowing before touching this:
   root. After edits, hit the reload icon there; new tabs pick up changes.
 - **Sanity-check logic without Chrome:** `hotlist.js` is import-safe in Node
   (copy to `.mjs` or use `--input-type=module`); feed it hand-built trees.
+- **Package it:** `gradle package` → `build/distributions/tabrc-<version>.zip`,
+  ready to upload to the Web Store. Requires a locally installed Gradle (there
+  is no wrapper). Three things to know before touching `build.gradle`:
+  - The zip's file list is an **explicit allowlist** of runtime files, not an
+    exclude list — so docs, `.git`, and the build script can't leak into an
+    upload. **Adding a new runtime file means adding it to `runtimeFiles`**, or
+    it silently won't ship.
+  - `version` is parsed out of `manifest.json`, so the manifest stays the only
+    place a version is bumped.
+  - Archives are reproducible (`preserveFileTimestamps = false`), which is why
+    zip entries show a 1980 timestamp. That's expected, not a clock bug.
 - **Docs flow:** product changes go through a PRD in `features/`, then a tech
   spec in `specs/` (filenames `YYYY-MM-DD-<idea>.md`), then implementation.
   Update the relevant doc when behavior changes.
@@ -91,7 +106,9 @@ Three mechanics worth knowing before touching this:
 ## Known deferred items
 
 - Icons (`icons/` + manifest `"icons"` key) — required only if publishing to
-  the Chrome Web Store, which is currently out of scope.
+  the Chrome Web Store, which is currently out of scope. `gradle package` warns
+  about the missing `"icons"` key and packages `icons/` automatically once the
+  directory exists.
 - Flat-mode reading order is down-then-across (multicol). If it ever feels
   wrong, the agreed fallback is a grid with `grid-auto-flow: row` — one-line
   change in `newtab.css`.

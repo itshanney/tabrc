@@ -1,0 +1,69 @@
+import groovy.json.JsonSlurper
+
+/*
+ * Packaging only — the extension itself still has no build step.
+ * The repo root is the unpacked extension; this script just zips the
+ * runtime subset of it for upload to the Chrome Web Store.
+ *
+ *   ./gradlew package     -> build/distributions/tabrc-<version>.zip
+ */
+
+plugins {
+    id 'base'
+}
+
+def manifestFile = file('manifest.json')
+def manifestJson = new JsonSlurper().parse(manifestFile)
+
+version = manifestJson.version
+
+// Explicit allowlist: everything the extension loads at runtime, and nothing
+// else. Docs (features/, specs/, README.md, CLAUDE.md), VCS metadata and this
+// build script must never end up in the uploaded zip.
+def runtimeFiles = [
+        'manifest.json',
+        'newtab.html',
+        'newtab.css',
+        'newtab.js',
+        'hotlist.js',
+        'render.js',
+]
+
+// Icons are a deferred item (see CLAUDE.md); the Web Store requires them, so
+// the directory is packaged whenever it exists and the task warns when it does not.
+def iconsDir = file('icons')
+
+tasks.register('package', Zip) {
+    group = 'distribution'
+    description = 'Builds the Chrome Web Store upload zip.'
+
+    archiveFileName = "tabrc-${project.version}.zip"
+    destinationDirectory = layout.buildDirectory.dir('distributions')
+
+    // Web Store expects manifest.json at the archive root, not under a folder.
+    from(projectDir) {
+        include runtimeFiles
+    }
+    from(iconsDir) {
+        into 'icons'
+    }
+
+    // Reproducible archives: no timestamps or host file ordering in the zip.
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+
+    doFirst {
+        def missing = runtimeFiles.findAll { !file(it).exists() }
+        if (missing) {
+            throw new GradleException("Missing runtime files: ${missing.join(', ')}")
+        }
+        if (!manifestJson.icons) {
+            logger.warn('WARNING: manifest.json has no "icons" key. ' +
+                    'The Chrome Web Store requires icons before a listing can be published.')
+        }
+    }
+}
+
+tasks.named('assemble') {
+    dependsOn 'package'
+}

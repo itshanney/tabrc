@@ -55,10 +55,22 @@ Since you loaded the extension from a folder you control, you can edit it. The l
 :root {
   --column-width: 250px;  /* how wide each column is */
   --column-gap: 50px;     /* space between columns */
-  --row-gap: 24px;        /* space between rows, when columns wrap */
+  --row-gap: 45px;        /* space between rows, when columns wrap */
   --content-anchor: 40vh; /* how high on the screen the list sits; 50vh = dead center */
   --max-columns: 3;       /* columns per row before wrapping to the next one */
 }
 ```
 
 Change a value, then click the reload icon on the tabrc card in `chrome://extensions` and open a new tab. Text size is the `font-size` on the `body` rule just below. Keep `--content-anchor` at 50vh or lower.
+
+## Packaging
+
+You don't need this to use tabrc — loading the folder unpacked is the normal path. It's here for building the zip the Chrome Web Store expects:
+
+```sh
+gradle package   # -> build/distributions/tabrc-<version>.zip
+```
+
+Requires Gradle installed locally. The zip contains only the files the extension actually loads — no docs, no repository metadata — with `manifest.json` at the top level, and it's named from the `version` in `manifest.json`. Publishing a listing also requires icons, which this project doesn't have yet; the build prints a warning to that effect.
+
+Nothing else changes: the extension is still plain HTML/CSS/JS with no build step, and the repository folder is still directly loadable in Chrome.

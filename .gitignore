@@ -8,3 +8,7 @@
 
 # Node, if a test toolchain is ever added
 node_modules/
+
+# Gradle (packaging only — the extension itself still has no build step)
+.gradle/
+build/
