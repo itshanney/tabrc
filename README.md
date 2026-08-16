@@ -27,6 +27,8 @@ Everything is managed from the Bookmark Manager: add, remove, rename, or drag to
 - **Flat list** — if `tabrc-hotlist` contains only bookmarks, they flow across the full width of the page in the order you keep them.
 - **Grouped columns** — if `tabrc-hotlist` contains sub-folders, each sub-folder becomes a labeled column (the folder name is the heading). In this mode, only the sub-folders are shown — bookmarks sitting directly in `tabrc-hotlist` are ignored, so commit to one style or the other. Folders nested deeper than one level are ignored.
 
+Either way the list sits a little above the middle of the screen, roughly where your eyes land when a tab opens. Grouped columns are a fixed width and centered as a block, wrapping onto another row if you have more columns than fit the window.
+
 Each entry shows the site's icon from Chrome's local cache; sites you haven't visited yet get a generic icon until Chrome caches theirs.
 
 ## Privacy
@@ -43,3 +45,19 @@ tabrc makes zero network requests. It reads your bookmarks locally to display th
 - **"Your hot list is empty" message** — the `tabrc-hotlist` folder doesn't exist yet, is spelled or capitalized differently, or contains no bookmarks (or only empty sub-folders).
 - **A bookmark is missing** — in grouped mode, bookmarks placed directly in `tabrc-hotlist` (outside any sub-folder) aren't shown; move them into a sub-folder. Beyond 50 bookmarks, the rest are cut off.
 - **Changes not showing** — changes appear on the next new tab you open; already-open tabs don't refresh themselves.
+- **Long bookmark names are cut off** — titles are trimmed to fit the column. Either rename the bookmark to something shorter, or widen the columns (see below).
+
+## Tweak the look
+
+Since you loaded the extension from a folder you control, you can edit it. The layout settings live at the top of `newtab.css`:
+
+```css
+:root {
+  --column-width: 250px;  /* how wide each column is */
+  --column-gap: 50px;     /* space between columns */
+  --row-gap: 24px;        /* space between rows, when columns wrap */
+  --content-anchor: 40vh; /* how high on the screen the list sits; 50vh = dead center */
+}
+```
+
+Change a value, then click the reload icon on the tabrc card in `chrome://extensions` and open a new tab. Text size is the `font-size` on the `body` rule just below. Keep `--content-anchor` at 50vh or lower.

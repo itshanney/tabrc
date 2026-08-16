@@ -28,9 +28,32 @@ sourced from a Chrome bookmarks folder named `tabrc-hotlist`.
 | `newtab.js` | Entry point; the single runtime error boundary (any failure → empty-state message, never a blank page) |
 | `hotlist.js` | **Pure** selection logic: bookmark tree in, view model out. No Chrome APIs, no DOM — must stay runnable in plain Node for tests |
 | `render.js` | View model → DOM via template clones; builds `_favicon` URLs |
-| `newtab.css` | Flat mode = full-width multicol; grouped mode = wrapping flex columns |
+| `newtab.css` | Flat mode = full-width multicol; grouped mode = wrapping flex columns. All layout knobs are `:root` custom properties — see below |
 | `features/` | PRDs (product specs) |
 | `specs/` | Tech specs |
+
+### Layout knobs (`:root` in `newtab.css`)
+
+Tune these rather than editing the rules that consume them:
+
+| Property | Current | Effect |
+|---|---|---|
+| `--column-width` | `250px` | Grouped columns are `flex: 0 0` this width — fixed, no grow/shrink |
+| `--column-gap` | `50px` | Horizontal space between columns (both modes) |
+| `--row-gap` | `24px` | Vertical space when grouped columns wrap to a second row |
+| `--content-anchor` | `40vh` | Where the vertical midpoint of the content block sits |
+
+Two mechanics worth knowing before touching this:
+
+- **Vertical anchoring.** `main` is `min-height: 100vh` with `box-sizing:
+  border-box`, and each mode centers its content inside main's *content* box.
+  The extra bottom padding (`calc(24px + 100vh - 2 * var(--content-anchor))`)
+  shrinks that box from the bottom, moving the midpoint from 50vh to the
+  anchor. Values above `50vh` invert the math — keep it ≤ 50vh.
+- **Fixed width is grouped-mode only.** Flat mode is CSS multicol, where
+  `column-width` is a *minimum*: columns stretch to fill the viewport. Pinning
+  flat columns to an exact width would require constraining the container to a
+  computed multiple, which needs JS — deliberately not done.
 
 ## Behavior invariants (from the PRD — don't change casually)
 

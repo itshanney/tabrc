@@ -1,5 +1,10 @@
 :root {
   color-scheme: light dark;
+  /* Single knob for column width in both modes. */
+  --column-width: 250px;
+  --column-gap: 50px; /* horizontal space between columns */
+  --row-gap: 24px; /* vertical space when grouped columns wrap */
+  --content-anchor: 40vh; /* where the middle of the column block sits */
 }
 
 * {
@@ -12,14 +17,20 @@ body {
   background: Canvas;
   color: CanvasText;
   font-family: system-ui, sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.4;
   /* Long titles are ellipsized, never widen the page: no horizontal scroll. */
   overflow-x: hidden;
 }
 
 main {
-  padding: 24px 32px;
+  /* Full-viewport box so both modes can center their content vertically. */
+  min-height: 100vh;
+  /*
+   * Each mode centers its content inside main's content box, so the extra
+   * bottom padding lifts that midpoint from 50vh to --content-anchor.
+   */
+  padding: 24px 32px calc(24px + 100vh - 2 * var(--content-anchor));
 }
 
 /* ---- Entries (shared by both modes) ---- */
@@ -61,11 +72,16 @@ main {
   text-overflow: ellipsis;
 }
 
-/* ---- Flat mode: one list flowed down-then-across, filling the width ---- */
+/* ---- Flat mode: one list flowed down-then-across, centered on screen ---- */
+
+main[data-mode="flat"] {
+  display: grid;
+  align-content: center; /* vertical centering; the list still spans the width */
+}
 
 main[data-mode="flat"] .group-entries {
-  columns: 16rem auto;
-  column-gap: 24px;
+  column-width: var(--column-width);
+  column-gap: var(--column-gap);
 }
 
 /* ---- Grouped mode: one labeled column per sub-folder ---- */
@@ -73,23 +89,26 @@ main[data-mode="flat"] .group-entries {
 main[data-mode="grouped"] {
   display: flex;
   flex-wrap: wrap; /* wrap rather than horizontally scroll at narrow widths */
-  align-items: flex-start;
-  gap: 24px;
+  align-items: flex-start; /* columns in a row stay top-aligned to each other */
+  align-content: center; /* the block of rows sits in the middle of the screen */
+  justify-content: center;
+  gap: var(--row-gap) var(--column-gap);
 }
 
 .group {
-  flex: 1 1 0;
-  min-width: 14rem;
+  flex: 0 0 var(--column-width); /* fixed width: no grow, no shrink */
+  max-width: 100%; /* ...except below 250px of viewport, where it just fits */
 }
 
 .group-heading {
-  margin: 0 0 6px;
-  padding: 0 8px;
-  font-size: 12px;
-  font-weight: 600;
+  margin: 0 0 8px;
+  padding: 0 8px 6px;
+  border-bottom: 1px solid color-mix(in srgb, CanvasText 20%, transparent);
+  font-size: 14px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: color-mix(in srgb, CanvasText 60%, Canvas);
+  letter-spacing: 0.08em;
+  color: CanvasText;
 }
 
 /* ---- Empty state ---- */
@@ -97,7 +116,6 @@ main[data-mode="grouped"] {
 main[data-mode="empty"] {
   display: grid;
   place-items: center;
-  min-height: 100vh;
 }
 
 .empty-state {
