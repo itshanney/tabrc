@@ -40,7 +40,7 @@ Tune these rather than editing the rules that consume them:
 |---|---|---|
 | `--column-width` | `250px` | Grouped columns are `flex: 0 0` this width — fixed, no grow/shrink |
 | `--column-gap` | `50px` | Horizontal space between columns (both modes) |
-| `--row-gap` | `24px` | Vertical space when grouped columns wrap to a second row |
+| `--row-gap` | `45px` | Vertical space when grouped columns wrap to a second row |
 | `--content-anchor` | `40vh` | Where the vertical midpoint of the content block sits |
 | `--max-columns` | `3` | Grouped columns per row before wrapping (grouped mode only) |
 | `--page-padding-x` | `32px` | `main`'s horizontal padding; folded into the grouped-mode `max-width` |

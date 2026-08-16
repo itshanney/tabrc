@@ -3,7 +3,7 @@
   /* Single knob for column width in both modes. */
   --column-width: 250px;
   --column-gap: 50px; /* horizontal space between columns */
-  --row-gap: 24px; /* vertical space when grouped columns wrap */
+  --row-gap: 45px; /* vertical space when grouped columns wrap */
   --content-anchor: 40vh; /* where the middle of the column block sits */
   --max-columns: 3; /* grouped mode wraps to a new row past this many columns */
   --page-padding-x: 32px; /* main's horizontal padding; folded into the grid width */
