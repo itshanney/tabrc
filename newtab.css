@@ -4,9 +4,15 @@
   --column-width: 250px;
   --column-gap: 50px; /* horizontal space between columns */
   --row-gap: 45px; /* vertical space when grouped columns wrap */
-  --content-anchor: 40vh; /* where the middle of the column block sits */
+  /*
+   * Where the vertical midpoint of the content block sits, as a fraction of
+   * the viewport — so it lands in the same *proportional* spot at every
+   * resolution. Keep it <= 50dvh.
+   */
+  --content-anchor: 40dvh;
   --max-columns: 3; /* grouped mode wraps to a new row past this many columns */
   --page-padding-x: 32px; /* main's horizontal padding; folded into the grid width */
+  --page-padding-y: 24px; /* minimum breathing room above/below the content */
 }
 
 * {
@@ -15,7 +21,7 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: Canvas;
   color: CanvasText;
   font-family: system-ui, sans-serif;
@@ -26,14 +32,27 @@ body {
 }
 
 main {
-  /* Full-viewport box so both modes can center their content vertically. */
-  min-height: 100vh;
-  /*
-   * Each mode centers its content inside main's content box, so the extra
-   * bottom padding lifts that midpoint from 50vh to --content-anchor.
-   */
-  padding: 24px var(--page-padding-x)
-    calc(24px + 100vh - 2 * var(--content-anchor));
+  /* Full-viewport box; .content does the vertical placement inside it. */
+  min-height: 100dvh;
+  display: grid;
+  align-content: start; /* don't stretch .content — its own height is the ruler */
+  padding: var(--page-padding-y) var(--page-padding-x);
+}
+
+/*
+ * The anchor box, and the one grid item in every mode: main owns the page box,
+ * .content owns the mode's layout. It is at least tall enough that its own
+ * midpoint lands on --content-anchor (the padding above it is subtracted from
+ * both halves), and the mode's layout is centred inside it — so the block sits
+ * at the same fraction of the viewport on a 720p laptop and a 4K display.
+ * Content taller than that box grows it downward instead: the page scrolls
+ * from the top with no clipping and no dead space below.
+ */
+.content {
+  min-height: calc(2 * (var(--content-anchor) - var(--page-padding-y)));
+  min-width: 0;
+  display: grid;
+  align-content: center;
 }
 
 /* ---- Entries (shared by both modes) ---- */
@@ -77,11 +96,6 @@ main {
 
 /* ---- Flat mode: one list flowed down-then-across, centered on screen ---- */
 
-main[data-mode="flat"] {
-  display: grid;
-  align-content: center; /* vertical centering; the list still spans the width */
-}
-
 main[data-mode="flat"] .group-entries {
   column-width: var(--column-width);
   column-gap: var(--column-gap);
@@ -89,23 +103,21 @@ main[data-mode="flat"] .group-entries {
 
 /* ---- Grouped mode: one labeled column per sub-folder ---- */
 
-main[data-mode="grouped"] {
+main[data-mode="grouped"] > .content {
   /*
    * A wrapping flex row capped to exactly --max-columns columns: the container
-   * is only ever that wide (border-box, so the horizontal padding is added
-   * back in), which is what forces the wrap regardless of viewport width.
-   * justify-content: center then centers any partial row, so a leftover column
-   * lands in the middle and later ones spread out to the sides.
+   * is only ever that wide, which is what forces the wrap regardless of
+   * viewport width. justify-content: center then centers any partial row, so a
+   * leftover column lands in the middle and later ones spread out to the sides.
    */
   max-width: calc(
     var(--max-columns) * var(--column-width) + (var(--max-columns) - 1) *
-      var(--column-gap) + 2 * var(--page-padding-x)
+      var(--column-gap)
   );
   margin-inline: auto;
-  display: flex;
+  display: flex; /* overrides .content's grid; align-content still centres */
   flex-wrap: wrap; /* wrap rather than horizontally scroll at narrow widths */
   align-items: flex-start; /* columns in a row stay top-aligned to each other */
-  align-content: center; /* the block of rows sits in the middle of the screen */
   justify-content: center;
   gap: var(--row-gap) var(--column-gap);
 }
@@ -128,9 +140,8 @@ main[data-mode="grouped"] {
 
 /* ---- Empty state ---- */
 
-main[data-mode="empty"] {
-  display: grid;
-  place-items: center;
+main[data-mode="empty"] > .content {
+  justify-items: center;
 }
 
 .empty-state {

@@ -114,7 +114,7 @@ Nothing else — no host permissions, no background, no content scripts (PRD #12
 1. User hits Cmd+T; Chrome loads `newtab.html` from disk (~0ms, local).
 2. `newtab.js` runs at `DOMContentLoaded`, calls `chrome.bookmarks.getTree()` — an IPC to Chrome's in-memory bookmark model, single-digit ms even for thousands of bookmarks.
 3. `selectHotlist()` walks the tree (O(total bookmarks), trivially fast) and returns the view model.
-4. `render()` builds ≤50 anchor nodes in one `DocumentFragment`, appends once. Page is now visible and clickable — well inside the 200ms p95 budget (expected: <30ms).
+4. `render()` builds ≤50 anchor nodes inside one detached `<div class="content">` wrapper (which is also the CSS anchor box for vertical placement), appends once. Page is now visible and clickable — well inside the 200ms p95 budget (expected: <30ms).
 5. Favicon `<img>`s resolve asynchronously from Chrome's local cache; each has fixed CSS dimensions so no layout shift and no click-target movement. A cache miss renders Chrome's generic icon — the required placeholder.
 
 **Flow 1 error path:** `getTree()` rejects or a render bug throws → catch in `newtab.js` → empty-state message. Never a blank page.

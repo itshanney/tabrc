@@ -7,20 +7,22 @@ export function render(view, mainEl) {
   mainEl.textContent = "";
   mainEl.dataset.mode = view.mode;
 
-  if (view.mode === "empty") {
-    mainEl.append(cloneTemplate("empty-template"));
-    return;
-  }
+  // Every mode renders into one wrapper: <main> owns the page box, .content is
+  // both the CSS anchor box for vertical placement and the mode's layout
+  // container — which is what lets the placement rules be mode-independent.
+  const content = document.createElement("div");
+  content.className = "content";
 
-  const fragment = document.createDocumentFragment();
-  if (view.mode === "flat") {
-    fragment.append(buildEntryList(view.groups[0].entries));
+  if (view.mode === "empty") {
+    content.append(cloneTemplate("empty-template"));
+  } else if (view.mode === "flat") {
+    content.append(buildEntryList(view.groups[0].entries));
   } else {
     for (const group of view.groups) {
-      fragment.append(buildGroup(group));
+      content.append(buildGroup(group));
     }
   }
-  mainEl.append(fragment);
+  mainEl.append(content);
 }
 
 function buildGroup(group) {

@@ -29,7 +29,7 @@ sourced from a Chrome bookmarks folder named `tabrc-hotlist`.
 | `newtab.html` | Static shell: empty `<main>` + `<template>` nodes |
 | `newtab.js` | Entry point; the single runtime error boundary (any failure → empty-state message, never a blank page) |
 | `hotlist.js` | **Pure** selection logic: bookmark tree in, view model out. No Chrome APIs, no DOM — must stay runnable in plain Node for tests |
-| `render.js` | View model → DOM via template clones; builds `_favicon` URLs |
+| `render.js` | View model → DOM via template clones; builds `_favicon` URLs. Every mode renders into one `<div class="content">` — `main` positions that box, `.content` owns the mode's layout |
 | `newtab.css` | Flat mode = full-width multicol; grouped mode = wrapping flex columns. All layout knobs are `:root` custom properties — see below |
 | `features/` | PRDs (product specs) |
 | `specs/` | Tech specs |
@@ -45,21 +45,28 @@ Tune these rather than editing the rules that consume them:
 | `--column-width` | `250px` | Grouped columns are `flex: 0 0` this width — fixed, no grow/shrink |
 | `--column-gap` | `50px` | Horizontal space between columns (both modes) |
 | `--row-gap` | `45px` | Vertical space when grouped columns wrap to a second row |
-| `--content-anchor` | `40vh` | Where the vertical midpoint of the content block sits |
+| `--content-anchor` | `40dvh` | Fraction of the viewport where the content block's vertical midpoint sits (keep ≤ 50dvh) |
 | `--max-columns` | `3` | Grouped columns per row before wrapping (grouped mode only) |
-| `--page-padding-x` | `32px` | `main`'s horizontal padding; folded into the grouped-mode `max-width` |
+| `--page-padding-x` | `32px` | `main`'s horizontal padding |
+| `--page-padding-y` | `24px` | `main`'s vertical padding: the minimum gap above/below the content |
 
 Three mechanics worth knowing before touching this:
 
-- **Vertical anchoring.** `main` is `min-height: 100vh` with `box-sizing:
-  border-box`, and each mode centers its content inside main's *content* box.
-  The extra bottom padding (`calc(24px + 100vh - 2 * var(--content-anchor))`)
-  shrinks that box from the bottom, moving the midpoint from 50vh to the
-  anchor. Values above `50vh` invert the math — keep it ≤ 50vh.
+- **Vertical anchoring is proportional, and lives entirely on `.content`.**
+  `render()` wraps every mode in a single `<div class="content">`; `main` is a
+  `min-height: 100dvh` grid with `align-content: start` that only supplies the
+  page box and padding. `.content` is the anchor box: `min-height: calc(2 *
+  (var(--content-anchor) - var(--page-padding-y)))` makes its own midpoint land
+  exactly on the anchor, and `align-content: center` centers the mode's layout
+  inside it — so the block sits at the same *fraction* of the viewport at 720p
+  and at 4K, not at a height computed for one resolution. Content taller than
+  that box grows it downward instead: the page scrolls from the top, with no
+  clipping and no dead space below. Keep the anchor ≤ 50dvh, or the box is
+  taller than the viewport and every page scrolls.
 - **The 3-column cap is a container width, not a grid template.** Grouped mode
-  stays a wrapping flex row; `main` is capped at `--max-columns` columns wide
-  (plus gaps, plus `2 * --page-padding-x` because of `border-box`), which is
-  what forces the wrap independent of viewport width. `justify-content: center`
+  stays a wrapping flex row; `.content` is capped at `--max-columns` columns
+  wide (plus gaps), which is what forces the wrap independent of viewport
+  width. `justify-content: center`
   then centers a partial row — the leftover column lands in the middle and
   further ones spread to the sides. A real `grid-template-columns` would
   left-align that last row instead.
