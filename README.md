@@ -27,7 +27,7 @@ Everything is managed from the Bookmark Manager: add, remove, rename, or drag to
 - **Flat list** — if `tabrc-hotlist` contains only bookmarks, they flow across the full width of the page in the order you keep them.
 - **Grouped columns** — if `tabrc-hotlist` contains sub-folders, each sub-folder becomes a labeled column (the folder name is the heading). In this mode, only the sub-folders are shown — bookmarks sitting directly in `tabrc-hotlist` are ignored, so commit to one style or the other. Folders nested deeper than one level are ignored.
 
-Either way the list sits a little above the middle of the screen, roughly where your eyes land when a tab opens. Grouped columns are a fixed width and laid out three across, centered as a block; a fourth folder starts a second row. A row that isn't full is centered, so a leftover column sits in the middle and later ones fan out to the sides.
+Either way the list sits centered top-to-bottom on the screen, at the same spot whatever your resolution. Grouped columns are a fixed width and laid out three across, centered as a block; a fourth folder starts a second row. A row that isn't full is centered, so a leftover column sits in the middle and later ones fan out to the sides.
 
 Each entry shows the site's icon from Chrome's local cache; sites you haven't visited yet get a generic icon until Chrome caches theirs.
 
@@ -56,12 +56,12 @@ Since you loaded the extension from a folder you control, you can edit it. The l
   --column-width: 250px;  /* how wide each column is */
   --column-gap: 50px;     /* space between columns */
   --row-gap: 45px;        /* space between rows, when columns wrap */
-  --content-anchor: 40vh; /* how high on the screen the list sits; 50vh = dead center */
+  --content-anchor: 50dvh; /* how high on the screen the list sits; 50dvh = dead center */
   --max-columns: 3;       /* columns per row before wrapping to the next one */
 }
 ```
 
-Change a value, then click the reload icon on the tabrc card in `chrome://extensions` and open a new tab. Text size is the `font-size` on the `body` rule just below. Keep `--content-anchor` at 50vh or lower.
+Change a value, then click the reload icon on the tabrc card in `chrome://extensions` and open a new tab. Text size is the `font-size` on the `body` rule just below. Keep `--content-anchor` at 50dvh or lower — lower values raise the list up the page; anything above 50dvh makes every page scroll.
 
 ## Packaging
 

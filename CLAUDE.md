@@ -45,7 +45,7 @@ Tune these rather than editing the rules that consume them:
 | `--column-width` | `250px` | Grouped columns are `flex: 0 0` this width — fixed, no grow/shrink |
 | `--column-gap` | `50px` | Horizontal space between columns (both modes) |
 | `--row-gap` | `45px` | Vertical space when grouped columns wrap to a second row |
-| `--content-anchor` | `40dvh` | Fraction of the viewport where the content block's vertical midpoint sits (keep ≤ 50dvh) |
+| `--content-anchor` | `50dvh` | Fraction of the viewport where the content block's vertical midpoint sits; 50dvh (the max) is dead center, lower raises the block |
 | `--max-columns` | `3` | Grouped columns per row before wrapping (grouped mode only) |
 | `--page-padding-x` | `32px` | `main`'s horizontal padding |
 | `--page-padding-y` | `24px` | `main`'s vertical padding: the minimum gap above/below the content |
@@ -61,8 +61,11 @@ Three mechanics worth knowing before touching this:
   inside it — so the block sits at the same *fraction* of the viewport at 720p
   and at 4K, not at a height computed for one resolution. Content taller than
   that box grows it downward instead: the page scrolls from the top, with no
-  clipping and no dead space below. Keep the anchor ≤ 50dvh, or the box is
-  taller than the viewport and every page scrolls.
+  clipping and no dead space below. At the default 50dvh the box is exactly
+  `100dvh - 2 * --page-padding-y` tall, so with `main`'s padding added back it
+  fills the viewport precisely — dead-center placement with no scrollbar. Keep
+  the anchor ≤ 50dvh, or the box is taller than the viewport and every page
+  scrolls.
 - **The 3-column cap is a container width, not a grid template.** Grouped mode
   stays a wrapping flex row; `.content` is capped at `--max-columns` columns
   wide (plus gaps), which is what forces the wrap independent of viewport

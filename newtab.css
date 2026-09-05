@@ -7,9 +7,11 @@
   /*
    * Where the vertical midpoint of the content block sits, as a fraction of
    * the viewport — so it lands in the same *proportional* spot at every
-   * resolution. Keep it <= 50dvh.
+   * resolution. 50dvh (the maximum) is dead center; lower values raise the
+   * block. Never go above 50dvh, or the anchor box is taller than the
+   * viewport and every page scrolls.
    */
-  --content-anchor: 40dvh;
+  --content-anchor: 50dvh;
   --max-columns: 3; /* grouped mode wraps to a new row past this many columns */
   --page-padding-x: 32px; /* main's horizontal padding; folded into the grid width */
   --page-padding-y: 24px; /* minimum breathing room above/below the content */
@@ -44,9 +46,12 @@ main {
  * .content owns the mode's layout. It is at least tall enough that its own
  * midpoint lands on --content-anchor (the padding above it is subtracted from
  * both halves), and the mode's layout is centred inside it — so the block sits
- * at the same fraction of the viewport on a 720p laptop and a 4K display.
- * Content taller than that box grows it downward instead: the page scrolls
- * from the top with no clipping and no dead space below.
+ * at the same fraction of the viewport on a 720p laptop and a 4K display. At
+ * the default 50dvh the box fills the viewport exactly (100dvh - 2 *
+ * --page-padding-y, plus main's padding back), which centres the block
+ * top-to-bottom at any resolution without ever adding a scrollbar. Content
+ * taller than that box grows it downward instead: the page scrolls from the
+ * top with no clipping and no dead space below.
  */
 .content {
   min-height: calc(2 * (var(--content-anchor) - var(--page-padding-y)));
