@@ -17,15 +17,15 @@ The extension isn't on the Chrome Web Store; you load it directly from this fold
 ## Set up your hot list
 
 1. Open Chrome's Bookmark Manager (⌥⌘B / Ctrl+Shift+O).
-2. Create a folder named exactly **`tabrc-hotlist`** (case-sensitive). It can live anywhere — the Bookmarks Bar, Other Bookmarks, or inside another folder.
+2. Create a folder named exactly **`tabrc`** (case-sensitive). It can live anywhere — the Bookmarks Bar, Other Bookmarks, or inside another folder.
 3. Put bookmarks in it. That's it — the next new tab you open shows them.
 
 Everything is managed from the Bookmark Manager: add, remove, rename, or drag to reorder there, and the page updates the next time you open a tab. The page shows up to 50 bookmarks.
 
 ### Two layouts, chosen automatically
 
-- **Flat list** — if `tabrc-hotlist` contains only bookmarks, they flow across the full width of the page in the order you keep them.
-- **Grouped columns** — if `tabrc-hotlist` contains sub-folders, each sub-folder becomes a labeled column (the folder name is the heading). In this mode, only the sub-folders are shown — bookmarks sitting directly in `tabrc-hotlist` are ignored, so commit to one style or the other. Folders nested deeper than one level are ignored.
+- **Flat list** — if `tabrc` contains only bookmarks, they flow across the full width of the page in the order you keep them.
+- **Grouped columns** — if `tabrc` contains sub-folders, each sub-folder becomes a labeled column (the folder name is the heading). In this mode, only the sub-folders are shown — bookmarks sitting directly in `tabrc` are ignored, so commit to one style or the other. Folders nested deeper than one level are ignored.
 
 Either way the list sits centered top-to-bottom on the screen, at the same spot whatever your resolution. Grouped columns are a fixed width and laid out three across, centered as a block; a fourth folder starts a second row. A row that isn't full is centered, so a leftover column sits in the middle and later ones fan out to the sides.
 
@@ -42,8 +42,8 @@ tabrc makes zero network requests. It reads your bookmarks locally to display th
 
 ## Troubleshooting
 
-- **"Your hot list is empty" message** — the `tabrc-hotlist` folder doesn't exist yet, is spelled or capitalized differently, or contains no bookmarks (or only empty sub-folders).
-- **A bookmark is missing** — in grouped mode, bookmarks placed directly in `tabrc-hotlist` (outside any sub-folder) aren't shown; move them into a sub-folder. Beyond 50 bookmarks, the rest are cut off.
+- **"Your hot list is empty" message** — the `tabrc` folder doesn't exist yet, is spelled or capitalized differently, or contains no bookmarks (or only empty sub-folders).
+- **A bookmark is missing** — in grouped mode, bookmarks placed directly in `tabrc` (outside any sub-folder) aren't shown; move them into a sub-folder. Beyond 50 bookmarks, the rest are cut off.
 - **Changes not showing** — changes appear on the next new tab you open; already-open tabs don't refresh themselves.
 - **Long bookmark names are cut off** — titles are trimmed to fit the column. Either rename the bookmark to something shorter, or widen the columns (see below).
 

@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Chrome MV3 extension that overrides the new-tab page with a bookmark hot list
-sourced from a Chrome bookmarks folder named `tabrc-hotlist`.
+sourced from a Chrome bookmarks folder named `tabrc`.
 
 ## Ground rules
 
@@ -80,7 +80,7 @@ Three mechanics worth knowing before touching this:
 
 ## Behavior invariants (from the PRD — don't change casually)
 
-- Source folder: first folder titled exactly `tabrc-hotlist` (case-sensitive)
+- Source folder: first folder titled exactly `tabrc` (case-sensitive)
   in DFS pre-order of the bookmark tree.
 - Any sub-folder present ⇒ grouped mode: one labeled column per non-empty
   sub-folder; direct-child bookmarks ignored entirely. No sub-folders ⇒ flat

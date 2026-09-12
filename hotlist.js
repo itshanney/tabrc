@@ -1,7 +1,7 @@
 // Pure selection logic: bookmark tree in, view model out. No Chrome APIs —
 // this module must stay importable outside an extension context for testing.
 
-export const DEFAULT_FOLDER_NAME = "tabrc-hotlist";
+export const DEFAULT_FOLDER_NAME = "tabrc";
 export const DEFAULT_CAP = 50;
 
 export const EMPTY_VIEW = Object.freeze({ mode: "empty", groups: [] });

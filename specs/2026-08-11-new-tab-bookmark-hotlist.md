@@ -68,7 +68,7 @@ HotlistView
 
 Derivation rules (all in `hotlist.js`):
 
-1. **Folder discovery:** depth-first, pre-order traversal of `getTree()` output, children in array order; the first folder node with `title === "tabrc-hotlist"` (exact, case-sensitive) wins. Not found ⇒ `mode: "empty"`.
+1. **Folder discovery:** depth-first, pre-order traversal of `getTree()` output, children in array order; the first folder node with `title === "tabrc"` (exact, case-sensitive) wins. Not found ⇒ `mode: "empty"`.
 2. **Mode:** any child folder present ⇒ grouped (direct-child bookmarks ignored); otherwise flat.
 3. **Grouped:** one group per non-empty sub-folder in stored order; only the sub-folder's direct-child *bookmarks* count (deeper folders ignored). Empty sub-folders omitted. All groups empty ⇒ `mode: "empty"`.
 4. **Cap:** total entries across all groups truncated to 50, in traversal order (group by group); a group emptied entirely by truncation is dropped.
@@ -86,7 +86,7 @@ No network endpoints exist. The contracts are the two internal module boundaries
 selectHotlist(rootNodes: BookmarkTreeNode[], opts?: {folderName?, cap?}) -> HotlistView
 ```
 - `rootNodes` is the array returned by `chrome.bookmarks.getTree()`.
-- Defaults: `folderName: "tabrc-hotlist"`, `cap: 50`.
+- Defaults: `folderName: "tabrc"`, `cap: 50`.
 - Total entries across `groups` ≤ cap; never throws on well-formed input; unexpected node shapes are skipped, not fatal.
 
 **`render.js`**:
@@ -155,5 +155,5 @@ Nothing else — no host permissions, no background, no content scripts (PRD #12
 
 Both assumptions were confirmed by the requester on 2026-08-11; no open items remain.
 
-1. **Exact, case-sensitive folder-name match** for `tabrc-hotlist` — confirmed. Rationale from requester: the folder name on screen matches exactly how it is named in Bookmarks, so exact matching is the least surprising behavior.
+1. **Exact, case-sensitive folder-name match** for `tabrc` — confirmed. Rationale from requester: the folder name on screen matches exactly how it is named in Bookmarks, so exact matching is the least surprising behavior.
 2. **Flat-mode reading order is down-then-across** (native multicol behavior) — confirmed, with the understanding that it can be switched to across-then-down later if it reads poorly in practice (one-line change; see Tradeoff Log).
